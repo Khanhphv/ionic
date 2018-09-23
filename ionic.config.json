@@ -1,5 +1,8 @@
 {
   "name": "tesseract",
-  "integrations": {},
-  "type": "ionic-angular"
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular",
+  "pro_id": "be54e86f"
 }

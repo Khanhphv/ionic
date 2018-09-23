@@ -1,14 +1,14 @@
-<ion-header>
-  <ion-navbar>
-    <ion-title>
-      Ionic Blank
-    </ion-title>
-  </ion-navbar>
-</ion-header>
+<ion-content style="overflow: auto">
+  <h4 padding>Widht: {{ width ? width : 'none' }}</h4>
+  <h4 padding>Height: {{ height ? height : 'none' }}</h4>
+  <h4 padding>Height: {{ dodai ? dodai : 'none' }}</h4>
 
-<ion-content padding>
-  The world is your oyster.
-  <p>
-    If you get lost, the <a href="http://ionicframework.com/docs/v2">docs</a> will be your guide.
-  </p>
+  <button type="button" ion-button (click)="takePicture()">Take</button>
+  <button type="button" ion-button (click)="getPicture()">Library</button>
+  <button type="button" ion-button (click)="test()">Process</button>
+  <canvas #output id="canvasOutput" style="margin: 0 auto"></canvas>
+  <br />
+  <canvas #layout id="canvasInput"></canvas>
+  <hr>
+  <img src="{{selectedImage}}" alt="">
 </ion-content>
