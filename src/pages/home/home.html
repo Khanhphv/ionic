@@ -1,14 +1,11 @@
 <ion-content style="overflow: auto">
-  <h4 padding>Widht: {{ width ? width : 'none' }}</h4>
-  <h4 padding>Height: {{ height ? height : 'none' }}</h4>
-  <h4 padding>Height: {{ dodai ? dodai : 'none' }}</h4>
-
   <button type="button" ion-button (click)="takePicture()">Take</button>
   <button type="button" ion-button (click)="getPicture()">Library</button>
   <button type="button" ion-button (click)="test()">Process</button>
+  <img src="{{selectedImage}}" alt="">
+  <hr>
   <canvas #output id="canvasOutput" style="margin: 0 auto"></canvas>
   <br />
-  <canvas #layout id="canvasInput"></canvas>
+  <canvas #layout id="canvasInput" style="display: none"></canvas>
   <hr>
-  <img src="{{selectedImage}}" alt="">
 </ion-content>
