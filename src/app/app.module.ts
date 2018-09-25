@@ -9,8 +9,17 @@ import { HomePage } from '../pages/home/home';
 import { Camera } from '@ionic-native/camera';
 import { NgProgressModule } from '@ngx-progressbar/core';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
-import { Diagnostic } from '@ionic-native/diagnostic';
+import { AngularFireModule } from 'angularfire2'
+import { AngularFireDatabaseModule} from 'angularfire2/database'
 
+export const config = {
+  apiKey: "AIzaSyBr2_AsqmeqE60z4gHmouEDUkVbcf63ErM",
+  authDomain: "ionic-tesseract.firebaseapp.com",
+  databaseURL: "https://ionic-tesseract.firebaseio.com",
+  projectId: "ionic-tesseract",
+  storageBucket: "ionic-tesseract.appspot.com",
+  messagingSenderId: "933395206162"
+}
 @NgModule({
   declarations: [
     MyApp,
@@ -18,6 +27,9 @@ import { Diagnostic } from '@ionic-native/diagnostic';
   ],
   imports: [
     BrowserModule,
+    AngularFireModule,
+    AngularFireModule.initializeApp(config),
+    AngularFireDatabaseModule,
     IonicModule.forRoot(MyApp),
     NgProgressModule.forRoot()
   ],
@@ -30,8 +42,7 @@ import { Diagnostic } from '@ionic-native/diagnostic';
     StatusBar,
     SplashScreen,Camera,
     Base64ToGallery,
-    Diagnostic,
-    AndroidPermissions,
+     AndroidPermissions,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })
