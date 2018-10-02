@@ -58,6 +58,60 @@ export class HomePage {
     this.canvasIn = this.canvasRef.nativeElement
   }
 
+
+  //take picture
+  takePicture() {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      encodingType: this.camera.EncodingType.JPEG,
+      mediaType: this.camera.MediaType.PICTURE,
+      // targetWidth: 1200,
+    }
+    this.camera.getPicture(options).then((imageData) => {
+      // imageData is either a base64 encoded string or a file URI
+      // If it's base64 (DATA_URL):
+      this.selectedImage = 'data:image/jpeg;base64,' + imageData;
+      // this.getImg(this.selectedImage)
+
+    }, (err) => {
+      alert("Something wrong")
+    });
+  }
+  // end take picture
+
+  //get picture from gallery
+  getPicture() {
+    const options: CameraOptions = {
+      quality: 100,
+      destinationType: this.camera.DestinationType.DATA_URL,
+      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
+      saveToPhotoAlbum: false,
+      correctOrientation: true,
+      targetWidth: 1200,
+    }
+    this.camera.getPicture(options).then((imageData) => {
+      // imageData is either a base64 encoded string or a file URI
+      // If it's base64 (DATA_URL):
+      this.selectedImage = 'data:image/jpeg;base64,' + imageData;
+      // this.recognizeImage()
+      this.getImg(this.selectedImage)
+
+    }, (err) => {
+    });
+  }
+  //end get picture from gallery
+
+  //process image
+  processImage() {
+    this.canvasImage();
+    this.saveImageToGallery()
+  }
+  //end process
+
+
+
+
   // get picture on canvas
   getImg(image) {
     if (image) {
@@ -76,13 +130,13 @@ export class HomePage {
         // return this.downScaleCanvas(canvas, 0.09)
       };
       source.src = image;
-      this.test()
+      this.canvasImage()
     }
   }
   // end get picture on canvas
 
 
-  test() {
+  canvasImage() {
     let firstOption = this.storage[0]
     let x: any
     let y: any;
@@ -94,9 +148,9 @@ export class HomePage {
     y = element.srcX2;
     z = element.srcY2;
     t = element.srcY3;
-    
 
     let context = this.canvasOut.getContext('2d');
+
     let image = new Image();
     image.crossOrigin = 'Anonymous'
     image.onload = () => {
@@ -111,55 +165,43 @@ export class HomePage {
       var destX = this.canvasOut.width / 2 - destWidth / 2;
       var destY = this.canvasOut.height / 2 - destHeight / 2;
       context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
+
     }
     image.src = this.selectedImage
+
+
+  }
+
+  saveImageToGallery() {
+    let src = cv.imread('canvasOutput');
+    let dst = new cv.Mat();
+    // You can try more different parameters
+    cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY, 0);
+    cv.imshow('canvasOutput', dst);
+    src.delete(); dst.delete();
     this.base64Data = this.canvasOut.toDataURL("image/png")
-    this.base64ToGallery.base64ToGallery(this.base64Data).then(
-      res => alert("success"),
-      err => alert(this.base64Data)
-    );
+
+    // alert(this.canvasOut.toDataURL())
+    Tesseract.recognize(this.base64Data)
+      .then(result => {
+        // this.presentLoadingDefault()
+        alert(result)
+        this.imageText = result.text;
+      }), err => {
+        alert(err)
+      }
+    // this.base64ToGallery.base64ToGallery(this.base64Data).then(
+    //   res => alert("success"),
+    //   err => alert(this.base64Data)
+    // );
   }
 
-  //take picture
-  takePicture() {
-    const options: CameraOptions = {
-      quality: 100,
-      destinationType: this.camera.DestinationType.DATA_URL,
-      encodingType: this.camera.EncodingType.JPEG,
-      mediaType: this.camera.MediaType.PICTURE
-    }
-    this.camera.getPicture(options).then((imageData) => {
-      // imageData is either a base64 encoded string or a file URI
-      // If it's base64 (DATA_URL):
-      this.selectedImage = 'data:image/jpeg;base64,' + imageData;
-      this.getImg(this.selectedImage)
 
-    }, (err) => {
-      alert("Something wrong")
-    });
+
+  recognizeImage() {
+
   }
-  // end take picture
 
-
-  //get picture from gallery
-  getPicture() {
-    const options: CameraOptions = {
-      quality: 100,
-      destinationType: this.camera.DestinationType.DATA_URL,
-      sourceType: this.camera.PictureSourceType.PHOTOLIBRARY,
-      saveToPhotoAlbum: false,
-      correctOrientation: true
-    }
-    this.camera.getPicture(options).then((imageData) => {
-      // imageData is either a base64 encoded string or a file URI
-      // If it's base64 (DATA_URL):
-      this.selectedImage = 'data:image/jpeg;base64,' + imageData;
-      // this.recognizeImage()
-      this.getImg(this.selectedImage)
-    }, (err) => {
-    });
-  }
-  //end get picture from gallery
 
   start(ev) {
     let test = this.canvasRef.nativeElement.getBoundingClientRect();

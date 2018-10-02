@@ -2,13 +2,15 @@
   <div style="margin: 0 auto">
     <button type="button" ion-button (click)="takePicture()">Take</button>
     <button type="button" ion-button (click)="getPicture()">Library</button>
-    <button type="button" ion-button (click)="test()">Process</button>
+    <button type="button" ion-button (click)="processImage()">Process</button>
   </div>
   <img src="{{selectedImage}}" alt="">
+
+  <img src="{{base64Data}}" class="img-responsive" alt="Image">
+
   <hr>
-  <canvas #output id="canvasOutput" style="margin: 0 auto"></canvas>
+  <canvas #output id="canvasOutput" style="margin: 0 auto; display: none"></canvas>
   <br />
   <canvas #layout id="canvasInput" (touchstart)="start($event)" style="display: none"></canvas>
-  <hr>
-  <img src="{{base64}}" alt="">
+  <code> {{imageText}} </code>
 </ion-content>
