@@ -6,9 +6,8 @@ import * as Tesseract from 'tesseract.js'
 import { Platform } from 'ionic-angular'
 import { Base64ToGallery } from '@ionic-native/base64-to-gallery';
 import { AngularFireDatabase } from 'angularfire2/database'
-import { Observable } from 'rxjs/Observable';
 declare var cv: any;
-
+import * as $ from 'jquery'
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -21,12 +20,14 @@ export class HomePage {
   public width: any; height: any
   // image = '../../assets//imgs/20180923_160126.jpg';
   show: boolean = true;
-  base64Data: any;
+  // base64Data: any;
   canvasOut: any;
   storage: any
+  arrayOfCanvas : any // array of  canvases
+
 
   @ViewChild('layout') canvasRef;
-  @ViewChild('output') canvasOutPut;
+  // @ViewChild('output') canvasOutPut;
   canvasIn: any;
   constructor(
     public navCtrl: NavController,
@@ -54,8 +55,9 @@ export class HomePage {
   }
 
   ngAfterViewInit() {
-    this.canvasOut = this.canvasOutPut.nativeElement;
+    // this.canvasOut = this.canvasOutPut.nativeElement;
     this.canvasIn = this.canvasRef.nativeElement
+    this.selectedImage ='../../assets/imgs/20180923_160126.jpg'
   }
 
 
@@ -81,7 +83,7 @@ export class HomePage {
   // end take picture
 
   //get picture from gallery
-  getPicture() {
+  getPicture(index) {
     const options: CameraOptions = {
       quality: 100,
       destinationType: this.camera.DestinationType.DATA_URL,
@@ -95,7 +97,7 @@ export class HomePage {
       // If it's base64 (DATA_URL):
       this.selectedImage = 'data:image/jpeg;base64,' + imageData;
       // this.recognizeImage()
-      this.getImg(this.selectedImage)
+      this.getImg(this.selectedImage, index)
 
     }, (err) => {
     });
@@ -103,9 +105,9 @@ export class HomePage {
   //end get picture from gallery
 
   //process image
-  processImage() {
-    this.canvasImage();
-    this.saveImageToGallery()
+  processImage(index) {
+    this.canvasImage(index);
+    this.saveImageToGallery(index)
   }
   //end process
 
@@ -113,7 +115,7 @@ export class HomePage {
 
 
   // get picture on canvas
-  getImg(image) {
+  getImg(image, index) {
     if (image) {
       let context = this.canvasIn.getContext('2d');
       let source = new Image();
@@ -130,77 +132,84 @@ export class HomePage {
         // return this.downScaleCanvas(canvas, 0.09)
       };
       source.src = image;
-      this.canvasImage()
+      this.canvasImage(index)
     }
   }
   // end get picture on canvas
 
 
-  canvasImage() {
-    let firstOption = this.storage[0]
-    let x: any
-    let y: any;
-    let z: any;
-    let t: any;
-    let element = firstOption.elememts[0]
-    console.log(element)
-    x = element.srcX1;
-    y = element.srcX2;
-    z = element.srcY2;
-    t = element.srcY3;
-
-    let context = this.canvasOut.getContext('2d');
-
-    let image = new Image();
-    image.crossOrigin = 'Anonymous'
-    image.onload = () => {
-      var sourceX = x;
-      var sourceY = y;
-      var sourceWidth = z - x;
-      var sourceHeight = t - y;
-      var destWidth = sourceWidth;
-      var destHeight = sourceHeight;
-      this.canvasOut.width = image.width
-      this.canvasOut.height = image.height
-      var destX = this.canvasOut.width / 2 - destWidth / 2;
-      var destY = this.canvasOut.height / 2 - destHeight / 2;
-      context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
-
+  canvasImage(index) {
+    console.log(this.storage[index].elememts.length)
+    for (let i = 0; i < this.storage[index].elememts.length; i++) {
+      $(".canvas").append("<canvas id='canvasOut" + i + "' style='display: none' ></canvas>")
+      console.log($('#canvasOut'+ i)[0])
     }
-    image.src = this.selectedImage
+    // alert(this.arrayOfCanvas)
+    for (let i = 0; i < this.storage[index].elememts.length; i++) {
+      // let firstOption = this.storage[0]
+      let elementCanvas = $("#canvasOut"+ i)[0]
+      let element = this.storage[index].elememts[i]
+      let x: any
+      let y: any;
+      let z: any;
+      let t: any;
+      x = element.srcX1;
+      y = element.srcX2;
+      z = element.srcY2;
+      t = element.srcY3;
 
+      let context = elementCanvas.getContext('2d');
 
-  }
-
-  saveImageToGallery() {
-    let src = cv.imread('canvasOutput');
-    let dst = new cv.Mat();
-    // You can try more different parameters
-    cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY, 0);
-    cv.imshow('canvasOutput', dst);
-    src.delete(); dst.delete();
-    this.base64Data = this.canvasOut.toDataURL("image/png")
-
-    // alert(this.canvasOut.toDataURL())
-    Tesseract.recognize(this.base64Data)
-      .then(result => {
-        // this.presentLoadingDefault()
-        alert(result)
-        this.imageText = result.text;
-      }), err => {
-        alert(err)
+      let image = new Image();
+      image.crossOrigin = 'Anonymous'
+      image.onload = () => {
+        var sourceX = x;
+        var sourceY = y;
+        var sourceWidth = z - x;
+        var sourceHeight = t - y;
+        var destWidth = sourceWidth;
+        var destHeight = sourceHeight;
+        elementCanvas.width = image.width
+        elementCanvas.height = image.height
+        var destX = elementCanvas.width / 2 - destWidth / 2;
+        var destY = elementCanvas.height / 2 - destHeight / 2;
+        context.drawImage(image, sourceX, sourceY, sourceWidth, sourceHeight, destX, destY, destWidth, destHeight);
       }
-    // this.base64ToGallery.base64ToGallery(this.base64Data).then(
-    //   res => alert("success"),
-    //   err => alert(this.base64Data)
-    // );
-  }
-
-
-
-  recognizeImage() {
+      image.src = this.selectedImage
+    }
 
   }
+
+  saveImageToGallery(index) {
+    for (let i = 0; i < this.storage[index].elememts.length; i++) {
+      // let src = cv.imread('canvasOut'+ i);
+      // let dst = new cv.Mat();
+      // You can try more different parameters
+      // cv.cvtColor(src, dst, cv.COLOR_RGBA2GRAY, 0);
+      // cv.imshow('canvasOutput', dst);
+      // src.delete(); dst.delete();
+      console.log($("#canvasOut"+ i)[0])
+      let base64Data = ($("#canvasOut"+i)[0]).toDataURL("image/png")
+
+      // alert(this.canvasOut.toDataURL())
+      Tesseract.recognize(base64Data, {
+        lang: 'vie',
+      })
+        .then(result => {
+          // this.presentLoadingDefault()
+          alert(result)
+          this.imageText = result.text;
+        }), err => {
+          alert(err)
+        }
+      // this.base64ToGallery.base64ToGallery(base64Data).then(
+      //   res => alert("success"),
+      //   err => alert(base64Data)
+      // );
+    }
+
+  }
+
 
 
   start(ev) {
