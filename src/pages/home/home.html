@@ -4,12 +4,16 @@
     <button type="button" ion-button (click)="getPicture(0)">Library</button>
     <button type="button" ion-button (click)="processImage(0)">Process</button>
   </div>
-  <img src="{{selectedImage}}" alt="">
+  <img id="processImg" src="{{selectedImage}}" alt="">
 
-  <img src="{{base64Data}}" class="img-responsive" alt="Image">
   <canvas #layout id="canvasInput" (touchstart)="start($event)" style="display: none"></canvas>
   <hr>
-  <div class="canvas" ></div>
+  <div class="canvas"></div>
   <!-- <canvas #output id="canvasOutput" style="margin: 0 auto; display: none"></canvas> -->
   <code> {{imageText}} </code>
+  <ul>
+    <li *ngFor="let e of textResult">
+      {{e}}
+    </li>>
+  </ul>
 </ion-content>
