@@ -2,7 +2,6 @@ import { Component, ViewChild } from '@angular/core';
 import { IonicPage, NavController, Nav, Events } from 'ionic-angular';
 import { ProcessPage } from '../process/process';
 import { AngularFireDatabase } from 'angularfire2/database'
-
 @Component({
   selector: 'page-home',
   templateUrl: 'home.html'
@@ -13,6 +12,7 @@ export class HomePage {
   rootPage = ProcessPage;
   state: any = 0
   // @ViewChild(Nav) nav: Nav;
+
   constructor(
     public database: AngularFireDatabase,
     public navCtrl: NavController,
@@ -46,6 +46,7 @@ export class HomePage {
       'index': index,
       'obj': obj
     })
+
   }
   default() {
     this.event.publish('alo', {
