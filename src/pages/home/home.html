@@ -1,15 +1,19 @@
-<ion-content style="overflow: auto">
-  <div style="margin: 0 auto">
-    <button type="button" ion-button (click)="takePicture(0)">Take</button>
-    <button type="button" ion-button (click)="getPicture(0)">Library</button>
-    <button type="button" ion-button (click)="processImage(0)">Process</button>
-  </div>
-  <img src="{{selectedImage}}" alt="">
+<ion-menu [content]="content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Templates</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-  <img src="{{base64Data}}" class="img-responsive" alt="Image">
-  <canvas #layout id="canvasInput" (touchstart)="start($event)" style="display: none"></canvas>
-  <hr>
-  <div class="canvas" ></div>
-  <!-- <canvas #output id="canvasOutput" style="margin: 0 auto; display: none"></canvas> -->
-  <code> {{imageText}} </code>
-</ion-content>
+  <ion-content>
+    <ion-list>
+      <button menuClose ion-item (click)="default()"> Default </button>
+      <button menuClose ion-item *ngFor="let p of storage; let i = index" (click)="open(i,p)">
+        {{p.name}}
+      </button>
+    </ion-list>
+  </ion-content>
+
+</ion-menu>
+
+<ion-nav [root]="rootPage" #content swipeBackEnabled="false"></ion-nav>

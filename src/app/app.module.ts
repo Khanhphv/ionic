@@ -11,19 +11,21 @@ import { NgProgressModule } from '@ngx-progressbar/core';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 import { AngularFireModule } from 'angularfire2'
 import { AngularFireDatabaseModule} from 'angularfire2/database'
-
+import { ProcessPage } from '../pages/process/process'
+import { ShareDataProvider } from '../providers/share-data/share-data';
 export const config = {
-  apiKey: "AIzaSyBr2_AsqmeqE60z4gHmouEDUkVbcf63ErM",
-  authDomain: "ionic-tesseract.firebaseapp.com",
-  databaseURL: "https://ionic-tesseract.firebaseio.com",
-  projectId: "ionic-tesseract",
-  storageBucket: "ionic-tesseract.appspot.com",
-  messagingSenderId: "933395206162"
+  apiKey: "AIzaSyA48CcyJ2vWU8q5ZRfeuWRoVXlxX8QR1Ko",
+  authDomain: "ionic-tesseract-2dd97.firebaseapp.com",
+  databaseURL: "https://ionic-tesseract-2dd97.firebaseio.com",
+  projectId: "ionic-tesseract-2dd97",
+  storageBucket: "ionic-tesseract-2dd97.appspot.com",
+  messagingSenderId: "500471966297"
 }
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
+    ProcessPage
   ],
   imports: [
     BrowserModule,
@@ -31,19 +33,22 @@ export const config = {
     AngularFireModule.initializeApp(config),
     AngularFireDatabaseModule,
     IonicModule.forRoot(MyApp),
-    NgProgressModule.forRoot()
+    NgProgressModule.forRoot(),
   ],
   bootstrap: [IonicApp],
   entryComponents: [
     MyApp,
-    HomePage
+    HomePage,
+    ProcessPage
+
   ],
   providers: [
     StatusBar,
     SplashScreen,Camera,
     Base64ToGallery,
      AndroidPermissions,
-    {provide: ErrorHandler, useClass: IonicErrorHandler}
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
+    ShareDataProvider
   ]
 })
 export class AppModule {}
